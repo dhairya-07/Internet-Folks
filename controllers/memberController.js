@@ -10,6 +10,9 @@ const createMember = catchAsync(async (req, res, next) => {
   const { community, user, role } = req.body;
   const id = Snowflake.generate();
 
+  if (!community || !user || !role)
+    return next(new AppError('Either community, user or role missing', 401));
+
   const communityData = await Community.findOne({ where: community });
   const userData = await User.findOne({ where: user });
   const roleData = await Role.findOne({ where: role });
