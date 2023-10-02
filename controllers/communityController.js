@@ -65,8 +65,8 @@ const createCommunity = catchAsync(async (req, res, next) => {
 });
 
 const getMyOwnedCommunities = catchAsync(async (req, res, next) => {
-  const page = req.query.page * 1;
-  const limit = req.query.limit * 1;
+  const page = req.query.page * 1 || 1;
+  const limit = req.query.limit * 1 || 5;
 
   const communities = await Community.findAll(
     paginate(
@@ -121,8 +121,8 @@ const getMyOwnedCommunities = catchAsync(async (req, res, next) => {
 
 const getMembers = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  const page = req.query.page * 1;
-  const limit = req.query.limit * 1;
+  const page = req.query.page * 1 || 1;
+  const limit = req.query.limit * 1 || 5;
   const members = await Member.findAll(
     paginate(
       {
@@ -165,8 +165,8 @@ const getMembers = catchAsync(async (req, res, next) => {
 });
 
 const getAllCommunities = catchAsync(async (req, res, next) => {
-  const page = req.query.page * 1;
-  const limit = req.query.limit * 1;
+  const page = req.query.page * 1 || 1;
+  const limit = req.query.limit * 1 || 5;
 
   const communities = await Community.findAll(
     paginate(
@@ -202,8 +202,8 @@ const getAllCommunities = catchAsync(async (req, res, next) => {
 });
 
 const getMyJoinedCommunities = catchAsync(async (req, res, next) => {
-  const page = req.query.page * 1;
-  const limit = req.query.limit * 1;
+  const page = req.query.page * 1 || 1;
+  const limit = req.query.limit * 1 || 5;
   const communities = await Community.findAll(
     paginate(
       {

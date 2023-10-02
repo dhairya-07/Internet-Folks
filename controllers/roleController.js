@@ -18,9 +18,12 @@ const createRole = catchAsync(async (req, res, next) => {
 });
 
 const getAllRoles = catchAsync(async (req, res, next) => {
-  const { page, limit } = req.query;
+  const page = req.query.page * 1 || 1;
+  const limit = req.query.limit * 1 || 5;
   const rows = await Role.count();
-  const roles = await Role.findAll(paginate({ where: {} }, { page, limit }));
+  const roles = await Role.findAll(
+    paginate({ where: {} }, { page, pageLimit: limit })
+  );
   return res.status(200).json({
     status: true,
     content: {
@@ -29,7 +32,7 @@ const getAllRoles = catchAsync(async (req, res, next) => {
       },
       meta: {
         total: rows,
-        pages: rows / limit,
+        pages: Math.ceil(rows / limit),
         page: page,
       },
     },
