@@ -7,7 +7,7 @@ Step 3: run npm install
 
 Step 4: run npm start
 
-Step 5: Access any route as described in your postman documentation
+Step 5: Access any route as described in your postman documentation --- You can also follow this documentation https://documenter.getpostman.com/view/23797748/2s9YJc23hi
 
 ### Special Request
 I have created the models and also created associations among them still my sequelize queries are showing the error or associations not found, I have tried other ways to make this work but none seems to work
