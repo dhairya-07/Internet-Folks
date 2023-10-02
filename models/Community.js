@@ -30,4 +30,11 @@ const Community = db.define('Community', {
   },
 });
 
+Community.associate = (models) => {
+  Community.belongsTo(models.User, {
+    foreignKey: 'owner',
+    as: 'Owner',
+  });
+};
+
 module.exports = Community;

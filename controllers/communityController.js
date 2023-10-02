@@ -8,6 +8,7 @@ const slugify = require('slugify');
 const sequelize = require('../db');
 const { paginate } = require('../utils/paginate');
 const AppError = require('../utils/appError');
+const { Op } = require('sequelize');
 
 const createCommunity = catchAsync(async (req, res, next) => {
   const owner = req.user.id;
@@ -44,9 +45,10 @@ const createCommunity = catchAsync(async (req, res, next) => {
 
   await Member.create(
     {
+      id: Snowflake.generate(),
       community: newCommunity.id,
       user: owner,
-      role: adminRole.id,
+      role: adminRole[0].dataValues.id,
     },
     { transaction }
   );
@@ -63,7 +65,8 @@ const createCommunity = catchAsync(async (req, res, next) => {
 });
 
 const getMyOwnedCommunities = catchAsync(async (req, res, next) => {
-  const { page, limit } = req.query;
+  const page = req.query.page * 1;
+  const limit = req.query.limit * 1;
 
   const communities = await Community.findAll(
     paginate(
@@ -71,15 +74,15 @@ const getMyOwnedCommunities = catchAsync(async (req, res, next) => {
         where: {
           owner: req.user.id,
         },
-        include: [
-          {
-            model: User,
-            as: 'owner',
-            attributes: ['id', 'name'],
-          },
-        ],
+        // include: [
+        //   {
+        //     model: User,
+        //     as: 'Owner',
+        //     attributes: ['id', 'name'],
+        //   },
+        // ],
       },
-      { page, limit }
+      { page, pageLimit: limit }
     )
   );
 
@@ -91,7 +94,7 @@ const getMyOwnedCommunities = catchAsync(async (req, res, next) => {
       },
       meta: {
         total: communities.length,
-        pages: communities.length / limit,
+        pages: Math.ceil(communities.length / limit),
         page: page,
       },
     },
@@ -100,29 +103,30 @@ const getMyOwnedCommunities = catchAsync(async (req, res, next) => {
 
 const getMembers = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  const { page, limit } = req.query;
+  const page = req.query.page * 1;
+  const limit = req.query.limit * 1;
   const members = await Member.findAll(
     paginate(
       {
         where: {
           community: id,
         },
-        include: [
-          {
-            model: Role,
-            as: 'role',
-            attributes: ['id', 'name'],
-          },
-          {
-            model: User,
-            as: 'user',
-            attributes: ['id', 'name'],
-          },
-        ],
+        // include: [
+        //   {
+        //     model: Role,
+        //     as: 'Role',
+        //     attributes: ['id', 'name'],
+        //   },
+        //   {
+        //     model: User,
+        //     as: 'User',
+        //     attributes: ['id', 'name'],
+        //   },
+        // ],
       },
       {
         page,
-        limit,
+        pageLimit: limit,
       }
     )
   );
@@ -135,7 +139,7 @@ const getMembers = catchAsync(async (req, res, next) => {
       },
       meta: {
         total: members.length,
-        pages: members.length / limit,
+        pages: Math.ceil(members.length / limit),
         page: page,
       },
     },
@@ -143,20 +147,24 @@ const getMembers = catchAsync(async (req, res, next) => {
 });
 
 const getAllCommunities = catchAsync(async (req, res, next) => {
-  const { page, limit } = req.query;
+  const page = req.query.page * 1;
+  const limit = req.query.limit * 1;
+
   const communities = await Community.findAll(
     paginate(
       {
         where: {},
-        include: [
-          {
-            model: User,
-            as: 'user',
-            attributes: ['id', 'name'],
-          },
-        ],
+        // include: [
+        //   {
+        //     model: User,
+        //     as: 'Owner',
+        //     attributes: ['id', 'name'],
+        //   },
+        // ],
+        // expand: ['owner'],
+        // attributes: ['id', 'name'],
       },
-      { page, limit }
+      { page, pageLimit: limit }
     )
   );
 
@@ -168,7 +176,7 @@ const getAllCommunities = catchAsync(async (req, res, next) => {
       },
       meta: {
         total: communities.length,
-        pages: communities.length / limit,
+        pages: Math.ceil(communities.length / limit),
         page: page,
       },
     },
@@ -176,22 +184,26 @@ const getAllCommunities = catchAsync(async (req, res, next) => {
 });
 
 const getMyJoinedCommunities = catchAsync(async (req, res, next) => {
-  const { page, limit } = req.query;
+  const page = req.query.page * 1;
+  const limit = req.query.limit * 1;
   const communities = await Community.findAll(
-    paginate({
-      where: {
-        owner: {
-          $ne: req.user.id,
+    paginate(
+      {
+        where: {
+          owner: {
+            [Op.not]: req.user.id,
+          },
         },
+        // include: [
+        //   {
+        //     model: User,
+        //     as: 'owner',
+        //     attributes: ['id', 'name'],
+        //   },
+        // ],
       },
-      include: [
-        {
-          model: User,
-          as: 'owner',
-          attributes: ['id', 'name'],
-        },
-      ],
-    })
+      { page, pageLimit: limit }
+    )
   );
 
   return res.status(200).json({
@@ -202,7 +214,7 @@ const getMyJoinedCommunities = catchAsync(async (req, res, next) => {
       },
       meta: {
         total: communities.length,
-        pages: communities.length / limit,
+        pages: Math.ceil(communities.length / limit),
         page: page,
       },
     },

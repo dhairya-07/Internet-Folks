@@ -34,4 +34,19 @@ const Member = db.define('Member', {
   },
 });
 
+Member.associate = (models) => {
+  Member.belongsTo(models.User, {
+    foreignKey: 'user',
+    as: 'User',
+  });
+  Member.belongsTo(models.Community, {
+    foreignKey: 'commmunity',
+    as: 'Community',
+  });
+  Member.belongsTo(models.Role, {
+    foreignKey: 'role',
+    as: 'Role',
+  });
+};
+
 module.exports = Member;
