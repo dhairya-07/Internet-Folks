@@ -15,9 +15,9 @@ const Member = require('./models/Member');
 const app = express();
 
 sequelize
-  .sync({ models: [User, Role] })
+  .sync({ force: true })
   .then(() => {
-    sequelize.sync({ models: [Community, Member] });
+    sequelize.sync();
     console.log('DB connection success');
     app.listen(3002, () => {
       console.log('Server running on port:', 3002);

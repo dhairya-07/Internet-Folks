@@ -86,23 +86,23 @@ const getMyOwnedCommunities = catchAsync(async (req, res, next) => {
     )
   );
 
-  // for (const community of communities) {
-  //   const owner = await User.findOne({
-  //     where: { id: req.user.id },
-  //     attributes: ['id', 'name'],
-  //   });
-  //   community.setDataValue('owner', owner);
-  // }
+  for (const community of communities) {
+    const owner = await User.findOne({
+      where: { id: req.user.id },
+      attributes: ['id', 'name'],
+    });
+    community.setDataValue('owner', owner);
+  }
 
-  communities.map((community) => {
-    async () => {
-      const owner = await User.findOne({
-        where: { id: req.user.id },
-        attributes: ['id', 'name'],
-      });
-      community.setDataValue('owner', owner);
-    };
-  });
+  // communities.map((community) => {
+  //   async () => {
+  //     const owner = await User.findOne({
+  //       where: { id: req.user.id },
+  //       attributes: ['id', 'name'],
+  //     });
+  //     community.setDataValue('owner', owner);
+  //   };
+  // });
 
   return res.status(200).json({
     status: true,

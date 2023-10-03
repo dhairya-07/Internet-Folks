@@ -23,6 +23,7 @@ const Community = db.define('Community', {
   },
   owner: {
     type: Sequelize.STRING,
+    allowNull: false,
     references: {
       model: 'Users',
       key: 'id',

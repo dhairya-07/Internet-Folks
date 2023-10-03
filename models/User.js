@@ -56,4 +56,12 @@ User.prototype.validatePassword = (candidatePassword, dbPassword) => {
   return bcrypt.compareSync(candidatePassword, dbPassword);
 };
 
+User.associate = function (models) {
+  models.User.hasMany(models.Community, {
+    foreignKey: 'owner',
+    as: 'OwnedCommunities',
+  });
+  Seqeulize.EagerLoadingError = false;
+};
+
 module.exports = User;
