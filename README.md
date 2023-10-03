@@ -15,4 +15,4 @@ You can check the getMyOwnedCommunities handler in the controllers/communityCont
 it with many people and shared my code with them but none was able to find the error. I have tried creating the associations using just Community.belongsTo method but that throws --> User is not a subclass of 
 sequelize.model. Similarly i have searched and tried multiple solutions but none worked. This is not an excuse rather a learning oppurtunity as to where I might be going so wrong. If you can just review my code
 point out the mistake I would be really grateful.
-All the models are in the models directory, all the controllers are in the controller directory and the code with the problem lies in controller/communityController/js
+All the models are in the models directory, all the controllers are in the controller directory and the code with the problem lies in controller/communityController/js The error is Sequelize.eagerLoadingError
